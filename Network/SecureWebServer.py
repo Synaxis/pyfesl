@@ -73,6 +73,12 @@ class Handler(Resource):
             response += '</billingAccounts>'
 
             return response.encode()
+        elif uri == '/nucleus/check/user':
+            logger.new_message("[MAGMA] Sending check user.", 2)
+
+            response = header
+            response += '<success></success>'
+            return response.encode()
         elif uri == '/ofb/products':
             logger.new_message("[MAGMA] Sending products...", 2)
 
