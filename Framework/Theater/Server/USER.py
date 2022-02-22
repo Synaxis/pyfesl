@@ -25,7 +25,7 @@ def ReceiveComponent(self, data):
     if CorrectlyLoggedIn == True:
         self.GAMEOBJ.EXTIP, self.port = self.transport.client
         USERPacket = PacketEncoder.SetVar('TID', self.PacketID)
-        USERPacket += PacketEncoder.SetVar('NAME', 'BFHeroesServerPC')
+        USERPacket += PacketEncoder.SetVar('NAME', 'MargeSimpson')
         USERPacket += PacketEncoder.SetVar('CID', '', True)
 
         USERPacket = PacketEncoder.encode('USER', USERPacket, 0x0, 0)
