@@ -177,6 +177,7 @@ class Simple(resource.Resource):
                 pass
             except:
                 print ConsoleColor('Warning') + "[WebServer][Register] Cannot register new hero!" + ConsoleColor('End')
+            data2 = Session[session.uid]
             baseMSGFactionStats = data2.split('baseMSGFactionStats=')[1].split('&')[0]
             baseMSGPersonaClassStats = data2.split('baseMSGPersonaClassStats=')[1].split('&')[0]
             baseMSGAppearanceSkinToneStats = data2.split('baseMSGAppearanceSkinToneStats=')[1].split('&')[0]
