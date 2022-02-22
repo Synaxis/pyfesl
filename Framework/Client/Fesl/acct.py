@@ -12,24 +12,18 @@ def HandleNuLogin(self, data):
     loginData = db.loginUser(loginInfo)
 
     # if loginData['UserID'] > 0:  # Got UserID - Login Successful
-        self.CONNOBJ.accountSessionKey = '1234'
-        self.CONNOBJ.userID = '1234'
-        self.CONNOBJ.nuid = '1234'
+    self.CONNOBJ.accountSessionKey = 1234
+    self.CONNOBJ.userID = 1234
+    self.CONNOBJ.nuid = 1234
 
-        toSend.set("PacketData", "lkey", '1234'
-        toSend.set("PacketData", "nuid", self.CONNOBJ.nuid)
+    toSend.set("PacketData", "lkey", 1234)
+    toSend.set("PacketData", "nuid", 1234)
 
-        toSend.set("PacketData", "profileId", str(loginData['UserID']))
-        toSend.set("PacketData", "userId", str(loginData['UserID']))
+    toSend.set("PacketData", "profileId", str(loginData['UserID']))
+    toSend.set("PacketData", "userId", str(loginData['UserID']))
 
-        self.logger.new_message("[Login] User " + self.CONNOBJ.nuid + " logged in successfully!", 1)
-    # else:  # User not found
-    #     toSend.set("PacketData", "localizedMessage", "The user is not entitled to access this game")
-    #     toSend.set("PacketData", "errorContainer.[]", "0")
-    #     toSend.set("PacketData", "errorCode", "120")
-
-    #     self.logger_err.new_message("[Login] User tryed to login with expired Session Key", 1)
-
+    #self.logger.new_message("[Login] User " + self.CONNOBJ.nuid + " logged in successfully!", 1)
+  
     Packet(toSend).send(self, "acct", 0xC0000000, self.CONNOBJ.plasmaPacketID)
 
 
@@ -106,22 +100,22 @@ def HandleNuLoginPersona(self, data):
 
     requestedPersonaName = data.get("PacketData", "name")
 
-    personaData = db.loginPersona(self.CONNOBJ.userID, requestedPersonaName)
-    if personaData is not None:
-        self.CONNOBJ.personaID = personaData['personaId']
-        self.CONNOBJ.personaSessionKey = personaData['lkey']
-        self.CONNOBJ.personaName = requestedPersonaName
+    personaData = "1234"
+    # if personaData is not None:
+    self.CONNOBJ.personaID = personaData['personaId']
+    self.CONNOBJ.personaSessionKey = 1234
+    self.CONNOBJ.personaName = requestedPersonaName
 
-        toSend.set("PacketData", "lkey", personaData['lkey'])
-        toSend.set("PacketData", "profileId", str(self.CONNOBJ.personaID))
-        toSend.set("PacketData", "userId", str(self.CONNOBJ.personaID))
+    toSend.set("PacketData", "lkey", 1234)
+    toSend.set("PacketData", "profileId", "1234")
+    toSend.set("PacketData", "userId", "1234")
 
-        self.logger.new_message("[Persona] User " + self.CONNOBJ.nuid + " just logged as " + requestedPersonaName, 1)
-    else:
-        toSend.set("PacketData", "localizedMessage", "The user was not found")
-        toSend.set("PacketData", "errorContainer.[]", "0")
-        toSend.set("PacketData", "errorCode", "101")
-        self.logger_err.new_message("[Persona] User " + self.CONNOBJ.nuid + " wanted to login as " + requestedPersonaName + " but this persona cannot be found!", 1)
+    #     self.logger.new_message("[Persona] User " + self.CONNOBJ.nuid + " just logged as " + requestedPersonaName, 1)
+    # else:
+    #     toSend.set("PacketData", "localizedMessage", "The user was not found")
+    #     toSend.set("PacketData", "errorContainer.[]", "0")
+    #     toSend.set("PacketData", "errorCode", "101")
+    #     self.logger_err.new_message("[Persona] User " + self.CONNOBJ.nuid + " wanted to login as " + requestedPersonaName + " but this persona cannot be found!", 1)
 
     Packet(toSend).send(self, "acct", 0xC0000000, self.CONNOBJ.plasmaPacketID)
 
