@@ -1,86 +1,84 @@
-from Framework.Server.Theater import *
-from Logger import Log
-from Utilities.Packet import Packet
-
 from twisted.internet.protocol import Protocol, DatagramProtocol
+from Config import ConsoleColor
+from Utils import PacketDecoder
+from Framework.Theater.Server import CONN, USER, CGAM, UBRA, UGAM, EGRS, ECHO, PLVT
 
-
-class TCPHandler(Protocol):
+class HANDLER(Protocol):
     def __init__(self):
-        self.CONNOBJ = None
-        self.logger = Log("TheaterServer", "\033[36;1m")
-        self.logger_err = Log("TheaterServer", "\033[36;1;41m")
+        self.DATABUFF = ''
+        self.GAMEOBJ = None
+        self.PacketID = 0
+
+    def timeoutConnection(self):
+        print ConsoleColor('Warning') + '[TheaterServer] Closed connection to ' + self.ip + ':' + str(
+            self.port) + ' Reason: Connection Timeout' + ConsoleColor('End')
 
     def connectionMade(self):
         self.ip, self.port = self.transport.client
-        self.transport.setTcpNoDelay(True)
-
-        self.logger.new_message("[" + self.ip + ":" + str(self.port) + "] connected", 1)
+        print ConsoleColor('Info') + '[TheaterServer] Got connection from ' + self.ip + ':' + str(
+            self.port) + ConsoleColor('End')
+        return
 
     def connectionLost(self, reason):
-        self.logger.new_message("[" + self.ip + ":" + str(self.port) + "] disconnected ", 1)
-
-        if self.CONNOBJ is not None:
-            self.CONNOBJ.IsUp = False
-            del self
+        print ConsoleColor('Info') + '[TheaterServer] Lost connection to ' + self.ip + ':' + str(
+            self.port) + ConsoleColor('End')
 
         return
 
+    def readConnectionLost(self):
+        print ConsoleColor('Info') + '[TheaterServer] Lost connection to ' + self.ip + ':' + str(
+            self.port) + ConsoleColor('End')
+        self.transport.loseConnection()
+        return
+
+    def writeConnectionLost(self):
+        print ConsoleColor('Warning') + '[TheaterServer] Closed connection to ' + self.ip + ':' + str(
+            self.port) + ConsoleColor('End')
+        self.transport.loseConnection()
+        return
+
     def dataReceived(self, data):
-        packet_type = data[:4]
-        packets = data.split('\n\x00')
+        try:
+            Command = PacketDecoder.decode(data).GetCommand()
+            self.PacketID += 1
+        except:
+            Command = 'null'
 
-        dataObjs = []
-
-        if len(packets) > 2:
-            for packet in packets:
-                fixedPacketType = packet[:4]
-                fixedPacket = packet[12:]
-
-                if len(fixedPacket) == 0:
-                    break
-                else:
-                    dataObjs.append({"data": Packet(fixedPacket + "\n\x00").dataInterpreter(), "type": fixedPacketType})
+        if Command == 'CONN':
+            CONN.ReceiveComponent(self, data)
+        elif Command == 'USER':
+            USER.ReceiveComponent(self, data)
+        elif Command == 'CGAM':
+            CGAM.ReceiveComponent(self, data)
+        elif Command == 'UBRA':
+            UBRA.ReceiveComponent(self, data)
+        elif Command == 'UGAM':
+            UGAM.ReceiveComponent(self, data)
+        elif Command == 'EGRS':
+            EGRS.ReceiveComponent(self, data)
+        elif Command == 'PLVT':
+            PLVT.ReceiveComponent(self, data)
         else:
-            dataObjs.append({"data": Packet(packets[0][12:] + "\n\x00").dataInterpreter(), "type": packet_type})
-
-        self.logger.new_message("[" + self.ip + ":" + str(self.port) + "]<-- " + repr(data), 3)
-
-        for dataObj in dataObjs:
-            if dataObj['type'] == 'CONN':
-                CONN.ReceiveRequest(self, dataObj['data'])
-            elif dataObj['type'] == 'USER':
-                USER.ReceiveRequest(self, dataObj['data'])
-            elif dataObj['type'] == 'CGAM':
-                CGAM.ReceiveRequest(self, dataObj['data'])
-            elif dataObj['type'] == 'UGAM':
-                UGAM.ReceivePacket(self, dataObj['data'])
-            elif dataObj['type'] == 'UBRA':
-                UBRA.ReceivePacket(self, dataObj['data'])
-            elif dataObj['type'] == 'EGRS':
-                EGRS.ReceivePacket(self, dataObj['data'])
-            elif dataObj['type'] == 'PENT':
-                PENT.ReceivePacket(self, dataObj['data'])
-            elif dataObj['type'] == 'PLVT':
-                PLVT.ReceiveRequest(self, dataObj['data'])
-            else:
-                self.logger_err.new_message("[" + self.ip + ":" + str(self.port) + ']<-- Got unknown message type (' + dataObj['type'] + ")", 2)
+            print ConsoleColor(
+                'Warning') + '[TheaterServer] Warning! Got unknown command (' + Command + ']!' + ConsoleColor(
+                'End')
 
 
-class UDPHandler(DatagramProtocol):
+class HANDLER_UDP(DatagramProtocol):
+
     def __init__(self):
-        self.logger = Log("TheaterServer", "\033[32;1m")
-        self.logger_err = Log("TheaterServer", "\033[32;1;41m")
+        self.PacketID = 0
 
-    def datagramReceived(self, datagram, addr):
-        packet_type = datagram[:4]
-        packet_data = datagram[12:]
+    def datagramReceived(self, data, (host, port)):
+        try:
+            Command = PacketDecoder.decode(data).GetCommand()
+            self.PacketID += 1
+        except:
+            Command = 'null'
 
-        dataObj = Packet(packet_data).dataInterpreter()
-        self.logger.new_message("[" + addr[0] + ":" + str(addr[1]) + "]<-- " + repr(datagram), 3)
-
-        if packet_type == 'ECHO':
-            ECHO.ReceiveRequest(self, dataObj, addr)
+        if Command == 'ECHO':
+            ECHO.ReceiveComponent(self, data, (host, port))
         else:
-            self.logger_err.new_message("[" + addr[0] + ":" + str(addr[1]) + "][UDP] Received unknown packet type! (" + packet_type + ")", 2)
-
+            print ConsoleColor(
+                'Warning') + '[TheaterServer] Warning! Got unknown command (' + Command + ']!' + ConsoleColor(
+                'End')

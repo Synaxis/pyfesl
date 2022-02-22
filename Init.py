@@ -1,138 +1,124 @@
 #! python2.7
-
 import sys
 
-from Config import readFromConfig
-from Database import Database
-from Network import *
-from Logger import Log
-
-Log(None, None).clean_log()
+from Config import *
+from Network import FESLClient, FESLServer, TheaterClient, TheaterServer, WebServer, SecureWebServer
+from Framework import Database
+from Utils import Globals
 
 try:
     from twisted.internet import ssl, reactor
     from twisted.internet.protocol import Factory, Protocol
-    from twisted.web.server import Site
-    from OpenSSL import SSL
-except ImportError as importErr:
-    Log("Init", "\033[37;41m").new_message("Fatal Error!\n"
-                                           "Cannot import Twisted modules!\n"
-                                           "Please install all required dependencies using\n"
-                                           "`pip install -r requirements.txt`\n\n"
-                                           "Additional error info:\n" + str(importErr), 0)
+    from twisted.web import server, resource
+except ImportError, Error:
+    print ConsoleColor('Error') + 'Fatal Error! Cannot import Twisted modules!'
+    print 'Make sure you installed latest Twisted from pip!'
+    print '\n'
+    print 'Additional error info:'
+    print Error, ConsoleColor('End')
     sys.exit(1)
 
+try:
+    Database.Prepare()
+except Exception, DatabaseError:
+    print ConsoleColor('Error') + 'Fatal Error! Cannot create database file!'
+    print 'Make sure you have writing and reading permissions in "' + DatabaseFileLocation + '"'
+    print '\n'
+    print 'Additional error info:'
+    print DatabaseError, ConsoleColor('End')
+    sys.exit(1)
 
-def MainApp():
-    Log("Init", "\033[37m").new_message("Initializing Battlefield Heroes Master Server Emulator...", 0)
+def Start():
 
-    try:
-        ssl_key = readFromConfig("SSL", "priv_key_path")
-        ssl_cert = readFromConfig("SSL", "cert_file_path")
-        fesl_client_port = int(readFromConfig("connection", "fesl_client_port"))
-        fesl_server_port = int(readFromConfig("connection", "fesl_server_port"))
-        theater_client_port = int(readFromConfig("connection", "theater_client_port"))
-        theater_server_port = int(readFromConfig("connection", "theater_server_port"))
-        http_server_port = int(readFromConfig("connection", "http_server_port"))
-        https_server_port = int(readFromConfig("connection", "https_server_port"))
-    except:
-        Log("Init", "\033[37;41m").new_message("Fatal Error!\n"
-                                               "Failed to load certain values in the config.ini, be sure that EVERY "
-                                               "option has a valid value and try it again.")
-        sys.exit(2)
+    Globals.ServerIP = ServerIP
 
     try:
-        Database(True)
-    except Exception as DatabaseError:
-        Log("Database", "\033[37;1;41m").new_message("Fatal Error! Cannot initialize database!\n\n"
-                                                     "Additional error info:\n" + str(DatabaseError), 0)
-        sys.exit(3)
-
-    try:
-        SSLContext = ssl.DefaultOpenSSLContextFactory(ssl_key, ssl_cert)
-        Log("Init", "\033[37m").new_message("Successfully created SSL Context!", 2)
-    except Exception as SSLErr:
-        Log("Init", "\033[37;41m").new_message("Fatal Error!\n"
-                                               "Failed to create SSL Context!\n"
-                                               "Make sure that you installed all required modules using\n"
-                                               "`pip install -r requirements.txt`\n"
-                                               "Also check if you specified correct SSL Cert and/or key in "
-                                               "`config.ini`\n "
-                                               "Additional error info:\n" + str(SSLErr), 0)
-        sys.exit(4)
+        SSLContext = ssl.DefaultOpenSSLContextFactory('Certificates/BFHeroes.key', 'Certificates/BFHeroes.crt')
+    except Exception, OpenSSLError:
+        print ConsoleColor('Error') + 'Fatal Error in OpenSSL!'
+        print '\n'
+        print 'Additional error info:'
+        print OpenSSLError, ConsoleColor('End')
+        sys.exit(1)
 
     try:
         factory = Factory()
-        factory.protocol = FeslClient.HANDLER
-        reactor.listenSSL(fesl_client_port, factory, SSLContext)
-        Log("FeslClient", "\033[33;1m").new_message("Created TCP Socket (now listening on port " + str(fesl_client_port) + ")", 1)
-    except Exception as BindError:
-        Log("Init", "\033[33;1;41m").new_message("Fatal Error! Cannot bind socket to port: " + str(fesl_client_port) + "\n"
-                                                 "Make sure that this port aren't used by another program!\n\n"
-                                                 "Additional error info:\n" + str(BindError), 0)
-        sys.exit(5)
+        factory.protocol = FESLClient.HANDLER
+        reactor.listenSSL(FESLClientPort, factory, SSLContext)
+        print ConsoleColor('Success') + '[FESLClient] Started listening at port: ' + str(FESLClientPort) + ConsoleColor('End')
+    except Exception, BindError:
+        print ConsoleColor('Error') + 'Fatal Error! Cannot bind socket to port: ' + str(FESLClientPort)
+        print 'Make sure that other programs are not currently listening to this port!'
+        print '\n'
+        print 'Additional error info:'
+        print BindError, ConsoleColor('End')
+        sys.exit(1)
 
     try:
         factory = Factory()
-        factory.protocol = FeslServer.HANDLER
-        reactor.listenSSL(fesl_server_port, factory, SSLContext)
-        Log("FeslServer", "\033[32;1m").new_message("Created TCP Socket (now listening on port " + str(fesl_server_port) + ")", 1)
-    except Exception as BindError:
-        Log("Init", "\033[33;1;41m").new_message("Fatal Error! Cannot bind socket to port: " + str(fesl_server_port) + "\n"
-                                                 "Make sure that this port aren't used by another program!\n\n"
-                                                 "Additional error info:\n" + str(BindError), 0)
-        sys.exit(5)
+        factory.protocol = FESLServer.HANDLER
+        reactor.listenSSL(FESLServerPort, factory, SSLContext)
+        print ConsoleColor('Success') + '[FESLServer] Started listening at port: ' + str(FESLServerPort) + ConsoleColor('End')
+    except Exception, BindError:
+        print ConsoleColor('Error') + 'Fatal Error! Cannot bind socket to port: ' + str(FESLServerPort)
+        print 'Make sure that other programs are not currently listening to this port!'
+        print '\n'
+        print 'Additional error info:'
+        print BindError, ConsoleColor('End')
+        sys.exit(1)
 
     try:
-        factoryTCP = Factory()
-        factoryTCP.protocol = TheaterClient.TCPHandler
-        reactor.listenTCP(theater_client_port, factoryTCP)
-        Log("TheaterClient", "\033[35;1m").new_message("Created TCP Socket (now listening on port " + str(theater_client_port) + ")", 1)
-        reactor.listenUDP(theater_client_port, TheaterClient.UDPHandler())
-        Log("TheaterClient", "\033[35;1m").new_message("Created UDP Socket (now listening on port " + str(theater_client_port) + ")", 1)
-    except Exception as BindError:
-        Log("Init", "\033[35;1;41m").new_message("Fatal Error! Cannot bind socket to port: " + str(theater_client_port) + "\n"
-                                                 "Make sure that this port aren't used by another program!\n\n"
-                                                 "Additional error info:\n" + str(BindError), 0)
-        sys.exit(5)
+        factory = Factory()
+        factory.protocol = TheaterClient.HANDLER
+        reactor.listenTCP(TheaterClientPort, factory)
+        reactor.listenUDP(TheaterClientPort, TheaterClient.HANDLER_UDP())
+        print ConsoleColor('Success') + '[TheaterClient] Started listening at port: ' + str(TheaterClientPort) + ConsoleColor('End')
+    except Exception, BindError:
+        print ConsoleColor('Error') + 'Fatal Error! Cannot bind socket to port: ' + str(TheaterClientPort)
+        print 'Make sure that other programs are not currently listening to this port!'
+        print '\n'
+        print 'Additional error info:'
+        print BindError, ConsoleColor('End')
+        sys.exit(1)
 
     try:
-        factoryTCP = Factory()
-        factoryTCP.protocol = TheaterServer.TCPHandler
-        reactor.listenTCP(theater_server_port, factoryTCP)
-        Log("TheaterServer", "\033[36;1m").new_message("Created TCP Socket (now listening on port " + str(theater_server_port) + ")", 1)
-        reactor.listenUDP(theater_server_port, TheaterServer.UDPHandler())
-        Log("TheaterServer", "\033[36;1m").new_message("Created UDP Socket (now listening on port " + str(theater_server_port) + ")", 1)
-    except Exception as BindError:
-        Log("Init", "\033[35;1;41m").new_message("Fatal Error! Cannot bind socket to port: " + str(theater_server_port) + "\n"
-                                                 "Make sure that this port aren't used by another program!\n\n"
-                                                 "Additional error info:\n" + str(BindError), 0)
-        sys.exit(5)
+        factory = Factory()
+        factory.protocol = TheaterServer.HANDLER
+        reactor.listenTCP(TheaterServerPort, factory)
+        reactor.listenUDP(TheaterServerPort, TheaterServer.HANDLER_UDP())
+        print ConsoleColor('Success') + '[TheaterServer] Started listening at port: ' + str(TheaterServerPort) + ConsoleColor('End')
+    except Exception, BindError:
+        print ConsoleColor('Error') + 'Fatal Error! Cannot bind socket to port: ' + str(TheaterServerPort)
+        print 'Make sure that other programs are not currently listening to this port!'
+        print '\n'
+        print 'Additional error info:'
+        print BindError, ConsoleColor('End')
+        sys.exit(1)
 
     try:
-        site = Site(WebServer.Handler())
-        reactor.listenTCP(http_server_port, site)
-        Log("WebServer", "\033[36m").new_message("Created TCP Socket (now listening on port " + str(http_server_port) + ")", 1)
-    except Exception as BindError:
-        Log("Init", "\033[35;1;41m").new_message("Fatal Error! Cannot bind socket to port: " + str(http_server_port) + "\n"
-                                                 "Make sure that this port aren't used by another program!\n\n"
-                                                 "Additional error info:\n" + str(BindError), 0)
-        sys.exit(5)
+        site = server.Site(WebServer.Simple())
+        reactor.listenTCP(WebServerPort, site)
+        print ConsoleColor('Success') + '[WebServer] Started listening at port: ' + str(WebServerPort) + ConsoleColor('End')
+    except Exception, BindError:
+        print ConsoleColor('Error') + 'Fatal Error! Cannot bind socket to port: ' + str(WebServerPort)
+        print 'Make sure that other programs are not currently listening to this port!'
+        print '\n'
+        print 'Additional error info:'
+        print BindError, ConsoleColor('End')
+        sys.exit(1)
 
     try:
-        site = Site(SecureWebServer.Handler())
-        reactor.listenSSL(https_server_port, site, SSLContext)
-        Log("WebServer", "\033[36m").new_message("Created TCP Socket (now listening on port " + str(https_server_port) + ")", 1)
-    except Exception as BindError:
-        Log("Init", "\033[35;1;41m").new_message("Fatal Error! Cannot bind socket to port: " + str(https_server_port) + "\n"
-                                                 "Make sure that this port aren't used by another program!\n\n"
-                                                 "Additional error info:\n" + str(BindError), 0)
-        sys.exit(5)
-
-    Log("Init", "\033[37m").new_message("Finished initialization! Ready for receiving incoming connections...", 0)
-
+        site = server.Site(SecureWebServer.Simple())
+        reactor.listenSSL(SecureWebServerPort, site, SSLContext)
+        print ConsoleColor('Success') + '[SecureWebServer] Started listening at port: ' + str(SecureWebServerPort) + ConsoleColor('End')
+    except Exception, BindError:
+        print ConsoleColor('Error') + 'Fatal Error! Cannot bind socket to port: ' + str(SecureWebServerPort)
+        print 'Make sure that other programs are not currently listening to this port!'
+        print '\n'
+        print 'Additional error info:'
+        print BindError, ConsoleColor('End')
+        sys.exit(1)
     reactor.run()
 
-
 if __name__ == '__main__':
-    MainApp()
+    Start()

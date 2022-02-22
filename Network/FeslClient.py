@@ -1,90 +1,61 @@
-from DataClasses import Client
-from Globals import Clients
-from Framework.Client.Fesl import *
-from Logger import Log
-from Utilities.Packet import Packet
-
-from base64 import b64decode
-
 from twisted.internet.protocol import Protocol
-
+from Config import ConsoleColor
+from Utils import PacketDecoder
+from Framework.FESL.Client import fsys, acct, rank, pnow
 
 class HANDLER(Protocol):
     def __init__(self):
-        self.CONNOBJ = None
-        self.logger = Log("FeslClient", "\033[33;1m")
-        self.logger_err = Log("FeslClient", "\033[33;1;41m")
+        self.DATABUFF = ''
+        self.GAMEOBJ = None
+        self.PacketID = 0
 
-        self.packetData = ""
+    def timeoutConnection(self):
+        print ConsoleColor('Warning') + '[FESLClient] Closed connection to ' + self.ip + ':' + str(
+            self.port) + ' Reason: Connection Timeout' + ConsoleColor('End')
 
     def connectionMade(self):
         self.ip, self.port = self.transport.client
-        self.transport.setTcpNoDelay(True)
-
-        self.logger.new_message("[" + self.ip + ":" + str(self.port) + "] connected", 1)
-
-        if self.CONNOBJ is None:
-            self.CONNOBJ = Client()
-            self.CONNOBJ.ipAddr = self.ip
-            self.CONNOBJ.networkInt = self.transport
-            Clients.append(self.CONNOBJ)
+        print ConsoleColor('Info') + '[FESLClient] Got connection from ' + self.ip + ':' + str(
+            self.port) + ConsoleColor('End')
+        return
 
     def connectionLost(self, reason):
-        self.logger.new_message("[" + self.ip + ":" + str(self.port) + "] disconnected ", 1)
-
-        if self.CONNOBJ is not None:
-            self.CONNOBJ.IsUp = False
-            Clients.remove(self.CONNOBJ)
-            del self
+        print ConsoleColor('Info') + '[FESLClient] Lost connection to ' + self.ip + ':' + str(
+            self.port) + ConsoleColor('End')
 
         return
 
+    def readConnectionLost(self):
+        print ConsoleColor('Info') + '[FESLClient] Lost connection to ' + self.ip + ':' + str(
+            self.port) + ConsoleColor('End')
+        self.transport.loseConnection()
+        return
+
+    def writeConnectionLost(self):
+        print ConsoleColor('Warning') + '[FESLClient] Closed connection to ' + self.ip + ':' + str(
+            self.port) + ConsoleColor('End')
+        self.transport.loseConnection()
+        return
+
     def dataReceived(self, data):
-        packet_type = data[:4]
-        packet_checksum = data.split(data[12:])[0].split(packet_type)[1]
-        packet_id = Packet(None).getPacketID(packet_checksum[:4])
-        packet_length = packet_checksum[4:]
-        packet_data = data.split(packet_type + packet_checksum)[1]
-
-        self.logger.new_message("[" + self.ip + ":" + str(self.port) + "]<-- " + repr(data), 3)
-
-        dataObj = Packet(packet_data).dataInterpreter()
-
+        # Check if packet are correct, if not set command and txn to null
         try:
-            dataEncrypted = dataObj.get("PacketData", "data")
-
-            self.packetData += dataEncrypted.replace("%3d", "=")
-
-            if len(self.packetData) == int(dataObj.get("PacketData", "size")):
-                dataObj = Packet(b64decode(self.packetData) + "\x00").dataInterpreter()
-                self.packetData = ""
-                isValidPacket = True
-                self.CONNOBJ.plasmaPacketID += 1
-            else:
-                isValidPacket = False
+            Command = PacketDecoder.decode(data).GetCommand()
+            TXN = PacketDecoder.decode(data).GetTXN()
         except:
-            if packet_id == 0x80000000:  # Don't count it
-                pass
-            else:
-                self.CONNOBJ.plasmaPacketID += 1
+            Command = 'null'
+            TXN = 'null'
 
-            isValidPacket = True
-
-        if Packet(data).verifyPacketLength(packet_length) and isValidPacket:
-            TXN = dataObj.get("PacketData", "TXN")
-
-            if packet_type == "fsys":
-                fsys.ReceivePacket(self, dataObj, TXN)
-            elif packet_type == "acct":
-                acct.ReceivePacket(self, dataObj, TXN)
-            elif packet_type == "rank":
-                rank.ReceivePacket(self, dataObj, TXN)
-            elif packet_type == "pnow":
-                pnow.ReceiveRequest(self, dataObj, TXN)
-            else:
-                self.logger_err.new_message("[" + self.ip + ":" + str(self.port) + ']<-- Got unknown message type (' + packet_type + ")", 2)
-        elif not isValidPacket:
-            pass
+        if Command == 'fsys':
+            fsys.ReceiveComponent(self, TXN)
+        elif Command == 'acct':
+            self.PacketID += 1
+            acct.ReceiveComponent(self, data, TXN)
+        elif Command == 'rank':
+            self.PacketID += 1
+            rank.ReceiveComponent(self, data, TXN)
+        elif Command == 'pnow':
+            self.PacketID += 1
+            pnow.ReceiveComponent(self, data, TXN)
         else:
-            self.CONNOBJ.plasmaPacketID += 1
-            self.logger_err.new_message("Warning: Packet Length is diffirent than the received data length! (" + self.ip + ":" + str(self.port) + "). Ignoring that packet...", 2)
+            print ConsoleColor('Warning') + '[FESLClient] Warning! Got unknown command (' + Command + '] and unknown TXN (' + TXN + ')!' + ConsoleColor('End')

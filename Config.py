@@ -1,22 +1,23 @@
-import os
+ServerIP = '127.0.0.1'
+DatabaseFileLocation = 'Data/Database.db'
 
-from ConfigParser import ConfigParser
+WebServerPort = 80
+SecureWebServerPort = 443
+FESLClientPort = 18270
+FESLServerPort = 18051
+TheaterClientPort = 18275
+TheaterServerPort = 18056
 
-configFile = ConfigParser()
-configFile.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.ini'))
-
-
-def readFromConfig(section, parameter):
-    value = configFile.get(section, parameter)
-
-    isString = isinstance(value, str)
-
-    if isString:
-        if value.lower() == "true":
-            return True
-        elif value.lower() == "false":
-            return False
-        else:
-            return value
+def ConsoleColor(RequestedColor):
+    if RequestedColor == 'End':
+        return '\33[0m'
+    elif RequestedColor == 'Info':
+        return '\33[1m'
+    elif RequestedColor == 'Error':
+        return '\33[31m'
+    elif RequestedColor == 'Success':
+        return '\33[32m'
+    elif RequestedColor == 'Warning':
+        return '\33[33m'
     else:
-        return value
+        return None

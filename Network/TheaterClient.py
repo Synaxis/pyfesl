@@ -1,66 +1,79 @@
-from Framework.Client.Theater import *
-from Logger import Log
-from Utilities.Packet import Packet
-
 from twisted.internet.protocol import Protocol, DatagramProtocol
+from Config import ConsoleColor
+from Utils import PacketDecoder
+from Framework.Theater.Client import CONN, USER, GDAT, ECNL, EGAM, ECHO
 
-
-class TCPHandler(Protocol):
+class HANDLER(Protocol):
     def __init__(self):
-        self.CONNOBJ = None
-        self.logger = Log("TheaterClient", "\033[35;1m")
-        self.logger_err = Log("TheaterClient", "\033[35;1;41m")
+        self.DATABUFF = ''
+        self.GAMEOBJ = None
+        self.PacketID = 0
+
+    def timeoutConnection(self):
+        print ConsoleColor('Warning') + '[TheaterClient] Closed connection to ' + self.ip + ':' + str(
+            self.port) + ' Reason: Connection Timeout' + ConsoleColor('End')
 
     def connectionMade(self):
         self.ip, self.port = self.transport.client
-        self.transport.setTcpNoDelay(True)
-
-        self.logger.new_message("[" + self.ip + ":" + str(self.port) + "] connected", 1)
+        print ConsoleColor('Info') + '[TheaterClient] Got connection from ' + self.ip + ':' + str(
+            self.port) + ConsoleColor('End')
+        return
 
     def connectionLost(self, reason):
-        self.logger.new_message("[" + self.ip + ":" + str(self.port) + "] disconnected ", 1)
-
-        if self.CONNOBJ is not None:
-            self.CONNOBJ.IsUp = False
-            del self
+        print ConsoleColor('Info') + '[TheaterClient] Lost connection to ' + self.ip + ':' + str(
+            self.port) + ConsoleColor('End')
 
         return
 
+    def readConnectionLost(self):
+        print ConsoleColor('Info') + '[TheaterClient] Lost connection to ' + self.ip + ':' + str(
+            self.port) + ConsoleColor('End')
+        self.transport.loseConnection()
+        return
+
+    def writeConnectionLost(self):
+        print ConsoleColor('Warning') + '[TheaterClient] Closed connection to ' + self.ip + ':' + str(
+            self.port) + ConsoleColor('End')
+        self.transport.loseConnection()
+        return
+
     def dataReceived(self, data):
-        packet_type = data[:4]
-        packet_data = data[12:]
+        try:
+            Command = PacketDecoder.decode(data).GetCommand()
+            self.PacketID += 1
+        except:
+            Command = 'null'
 
-        dataObj = Packet(packet_data).dataInterpreter()
-        self.logger.new_message("[" + self.ip + ":" + str(self.port) + "]<-- " + repr(data), 3)
-
-        if packet_type == 'CONN':
-            CONN.ReceiveRequest(self, dataObj)
-        elif packet_type == 'USER':
-            USER.ReceiveRequest(self, dataObj)
-        elif packet_type == 'GDAT':
-            GDAT.ReceiveRequest(self, dataObj)
-        elif packet_type == 'EGAM':
-            EGAM.ReceiveRequest(self, dataObj)
-        elif packet_type == 'ECNL':
-            ECNL.ReceiveRequest(self, dataObj)
+        if Command == 'CONN':
+            CONN.ReceiveComponent(self, data)
+        elif Command == 'USER':
+            USER.ReceiveComponent(self, data)
+        elif Command == 'GDAT':
+            GDAT.ReceiveComponent(self, data)
+        elif Command == 'ECNL':
+            ECNL.ReceiveComponent(self, data)
+        elif Command == 'EGAM':
+            EGAM.ReceiveComponent(self, data)
         else:
-            self.logger_err.new_message(
-                "[" + self.ip + ":" + str(self.port) + ']<-- Got unknown message type (' + packet_type + ")", 2)
+            print ConsoleColor(
+                'Warning') + '[TheaterClient] Warning! Got unknown command (' + Command + ']!' + ConsoleColor(
+                'End')
 
+class HANDLER_UDP(DatagramProtocol):
 
-class UDPHandler(DatagramProtocol):
     def __init__(self):
-        self.logger = Log("TheaterClient", "\033[35;1m")
-        self.logger_err = Log("TheaterClient", "\033[35;1;41m")
+        self.PacketID = 0
 
-    def datagramReceived(self, datagram, addr):
-        packet_type = datagram[:4]
-        packet_data = datagram[12:]
+    def datagramReceived(self, data, (host, port)):
+        try:
+            Command = PacketDecoder.decode(data).GetCommand()
+            self.PacketID += 1
+        except:
+            Command = 'null'
 
-        dataObj = Packet(packet_data).dataInterpreter()
-        self.logger.new_message("[" + addr[0] + ":" + str(addr[1]) + "]<-- " + repr(datagram), 3)
-
-        if packet_type == 'ECHO':
-            ECHO.ReceiveRequest(self, dataObj, addr)
+        if Command == 'ECHO':
+            ECHO.ReceiveComponent(self, data, (host, port))
         else:
-            self.logger_err.new_message("[" + addr[0] + ":" + str(addr[1]) + "][UDP] Received unknown packet type! (" + packet_type + ")", 2)
+            print ConsoleColor(
+                'Warning') + '[TheaterClient] Warning! Got unknown command (' + Command + ']!' + ConsoleColor(
+                'End')
