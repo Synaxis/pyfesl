@@ -54,6 +54,8 @@ class HANDLER(Protocol):
             ECNL.ReceiveComponent(self, data)
         elif Command == 'EGAM':
             EGAM.ReceiveComponent(self, data)
+        # elif Command == 'PENT':
+        #     PENT.ReceiveComponent(self, data)
         else:
             print ConsoleColor(
                 'Warning') + '[TheaterClient] Warning! Got unknown command (' + Command + ']!' + ConsoleColor(
