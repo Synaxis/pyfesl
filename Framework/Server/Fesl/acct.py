@@ -96,10 +96,10 @@ def HandleNuGetAccount(self):
     toSend.set("PacketData", "nuid", self.CONNOBJ.nuid)
     toSend.set("PacketData", "DOBDay", "1")
     toSend.set("PacketData", "DOBMonth", "1")
-    toSend.set("PacketData", "DOBYear", "2017")
+    toSend.set("PacketData", "DOBYear", "2022")
     toSend.set("PacketData", "userID", str(userID))
     toSend.set("PacketData", "globalOptin", "0")
-    toSend.set("PacketData", "thidPartyOptin", "0")
+    toSend.set("PacketData", "thirdPartyOptin", "0")
     toSend.set("PacketData", "language", "enUS")
     toSend.set("PacketData", "country", "US")
 

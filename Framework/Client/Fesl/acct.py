@@ -61,7 +61,7 @@ def HandleNuGetAccount(self):
         toSend.set("PacketData", "DOBYear", str(accountInfo['birthday'].split('-')[0]))
         toSend.set("PacketData", "userID", str(userID))
         toSend.set("PacketData", "globalOptin", "0")
-        toSend.set("PacketData", "thidPartyOptin", "0")
+        toSend.set("PacketData", "thirdPartyOptin", "0")
         toSend.set("PacketData", "language", accountInfo['country'])
         toSend.set("PacketData", "country", accountInfo['country'])
 
