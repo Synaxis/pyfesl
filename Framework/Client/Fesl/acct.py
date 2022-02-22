@@ -12,12 +12,12 @@ def HandleNuLogin(self, data):
     loginData = db.loginUser(loginInfo)
 
     # if loginData['UserID'] > 0:  # Got UserID - Login Successful
-    self.CONNOBJ.accountSessionKey = "1234"
-    self.CONNOBJ.userID = "1234"
-    self.CONNOBJ.nuid = "1234"
+    self.CONNOBJ.accountSessionKey = '1234'
+    self.CONNOBJ.userID = '1'
+    self.CONNOBJ.nuid = '1'
 
-    toSend.set("PacketData", "lkey", "1234")
-    toSend.set("PacketData", "nuid", "1234")
+    toSend.set("PacketData", "lkey", '1234')
+    toSend.set("PacketData", "nuid", '1')
 
     toSend.set("PacketData", "profileId", str(loginData['UserID']))
     toSend.set("PacketData", "userId", str(loginData['UserID']))
@@ -54,16 +54,16 @@ def HandleNuGetAccount(self):
     accountInfo = db.getAccountInfo(userID)
 
     if accountInfo is not None:
-        toSend.set("PacketData", "heroName", accountInfo['email'])
-        toSend.set("PacketData", "nuid", accountInfo['email'])
-        toSend.set("PacketData", "DOBDay", str(accountInfo['birthday'].split('-')[2]))
-        toSend.set("PacketData", "DOBMonth", str(accountInfo['birthday'].split('-')[1]))
-        toSend.set("PacketData", "DOBYear", str(accountInfo['birthday'].split('-')[0]))
-        toSend.set("PacketData", "userID", str(userID))
+        toSend.set("PacketData", "heroName", "1234")
+        toSend.set("PacketData", "nuid", "1234")
+        toSend.set("PacketData", "DOBDay", "1")
+        toSend.set("PacketData", "DOBMonth", "1")
+        toSend.set("PacketData", "DOBYear", "1995")
+        toSend.set("PacketData", "userID", "1")
         toSend.set("PacketData", "globalOptin", "0")
         toSend.set("PacketData", "thirdPartyOptin", "0")
-        toSend.set("PacketData", "language", accountInfo['country'])
-        toSend.set("PacketData", "country", accountInfo['country'])
+        toSend.set("PacketData", "language", "en")
+        toSend.set("PacketData", "country", "US")
 
     Packet(toSend).send(self, "acct", 0xC0000000, self.CONNOBJ.plasmaPacketID)
 
