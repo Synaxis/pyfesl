@@ -72,4 +72,3 @@ Credits
 
 Special thanks to:
 - DICE (for making the game)
-"# bfheroes" 
