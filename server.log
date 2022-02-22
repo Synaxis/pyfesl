@@ -1,42 +1,32 @@
-[15:31:14][Init] Initializing Battlefield Heroes Master Server Emulator...
-[15:31:14][Database] Connected to database!
-[15:31:14][Init] Successfully created SSL Context!
-[15:31:14][FeslClient] Created TCP Socket (now listening on port 18270)
-[15:31:14][FeslServer] Created TCP Socket (now listening on port 18051)
-[15:31:14][TheaterClient] Created TCP Socket (now listening on port 18275)
-[15:31:14][TheaterClient] Created UDP Socket (now listening on port 18275)
-[15:31:14][TheaterServer] Created TCP Socket (now listening on port 18056)
-[15:31:14][TheaterServer] Created UDP Socket (now listening on port 18056)
-[15:31:14][WebServer] Created TCP Socket (now listening on port 80)
-[15:31:14][WebServer] Created TCP Socket (now listening on port 443)
-[15:31:14][Init] Finished initialization! Ready for receiving incoming connections...
-[15:31:24][FeslClient] [127.0.0.1:50295] connected
-[15:31:24][FeslClient] [127.0.0.1:50295]<-- 'fsys\xc0\x00\x00\x01\x00\x00\x00\xcaTXN=Hello\nclientString=bfwest-pc\nsku=125170\nlocale=en_US\nclientPlatform=PC\nclientVersion="1.42.217478.0 "\nSDKVersion=5.0.0.0.0\nprotocolVersion=2.0\nfragmentSize=8096\nclientType=client-noreg\n\x00'
-[15:31:24][FeslClient] [127.0.0.1:50295]--> 'fsys\xc0\x00\x00\x01\x00\x00\x00\xe8TXN=Hello\ndomainPartition.domain=eagames\ndomainPartition.subDomain=bfwest-dedicated\ncurTime="Feb-22-2022 12:31:24 UTC"\nactivityTimeoutSecs=3600\nmessengerIp=127.0.0.1\nmessengerPort=0\ntheaterIp=127.0.0.1\ntheaterPort=18275\x00'
-[15:31:24][FeslClient] [127.0.0.1:50295]--> 'fsys\xc0\x00\x00\x00\x00\x00\x00=TXN=MemCheck\nmemcheck.[]=0\ntype=0\nsalt=TCmFkE0zN\x00'
-[15:31:24][FeslClient] [127.0.0.1:50295]<-- 'fsys\x80\x00\x00\x00\x00\x00\x00"TXN=MemCheck\nresult=\n\x00'
-[15:31:24][SecureWebServer] [MAGMA] Sending authToken...
-[15:31:24][FeslClient] [127.0.0.1:50295]<-- 'acct\xc0\x00\x00\x02\x00\x00\x00XTXN=NuLogin\nreturnEncryptedInfo=0\nencryptedInfo=1234\nmacAddr=$aad2d428ffff\n\x00'
-[15:31:24][FeslClient] [127.0.0.1:50295] disconnected 
-[15:31:24][FeslClient] [127.0.0.1:50297] connected
-[15:31:24][FeslClient] [127.0.0.1:50297]<-- 'fsys\xc0\x00\x00\x01\x00\x00\x00\xcaTXN=Hello\nclientString=bfwest-pc\nsku=125170\nlocale=en_US\nclientPlatform=PC\nclientVersion="1.42.217478.0 "\nSDKVersion=5.0.0.0.0\nprotocolVersion=2.0\nfragmentSize=8096\nclientType=client-noreg\n\x00'
-[15:31:24][FeslClient] [127.0.0.1:50297]--> 'fsys\xc0\x00\x00\x01\x00\x00\x00\xe8TXN=Hello\ndomainPartition.domain=eagames\ndomainPartition.subDomain=bfwest-dedicated\ncurTime="Feb-22-2022 12:31:24 UTC"\nactivityTimeoutSecs=3600\nmessengerIp=127.0.0.1\nmessengerPort=0\ntheaterIp=127.0.0.1\ntheaterPort=18275\x00'
-[15:31:24][FeslClient] [127.0.0.1:50297]--> 'fsys\xc0\x00\x00\x00\x00\x00\x00=TXN=MemCheck\nmemcheck.[]=0\ntype=0\nsalt=lUUoLP0eI\x00'
-[15:31:24][FeslClient] [127.0.0.1:50297]<-- 'fsys\x80\x00\x00\x00\x00\x00\x00"TXN=MemCheck\nresult=\n\x00'
-[15:31:24][SecureWebServer] [MAGMA] Sending authToken...
-[15:31:24][FeslClient] [127.0.0.1:50297]<-- 'acct\xc0\x00\x00\x02\x00\x00\x00XTXN=NuLogin\nreturnEncryptedInfo=0\nencryptedInfo=1234\nmacAddr=$aad2d428ffff\n\x00'
-[15:31:24][FeslClient] [127.0.0.1:50297] disconnected 
-[15:31:24][FeslClient] [127.0.0.1:50298] connected
-[15:31:24][FeslClient] [127.0.0.1:50298]<-- 'fsys\xc0\x00\x00\x01\x00\x00\x00\xcaTXN=Hello\nclientString=bfwest-pc\nsku=125170\nlocale=en_US\nclientPlatform=PC\nclientVersion="1.42.217478.0 "\nSDKVersion=5.0.0.0.0\nprotocolVersion=2.0\nfragmentSize=8096\nclientType=client-noreg\n\x00'
-[15:31:24][FeslClient] [127.0.0.1:50298]--> 'fsys\xc0\x00\x00\x01\x00\x00\x00\xe8TXN=Hello\ndomainPartition.domain=eagames\ndomainPartition.subDomain=bfwest-dedicated\ncurTime="Feb-22-2022 12:31:24 UTC"\nactivityTimeoutSecs=3600\nmessengerIp=127.0.0.1\nmessengerPort=0\ntheaterIp=127.0.0.1\ntheaterPort=18275\x00'
-[15:31:24][FeslClient] [127.0.0.1:50298]--> 'fsys\xc0\x00\x00\x00\x00\x00\x00=TXN=MemCheck\nmemcheck.[]=0\ntype=0\nsalt=gF8teLVp9\x00'
-[15:31:24][FeslClient] [127.0.0.1:50298]<-- 'fsys\x80\x00\x00\x00\x00\x00\x00"TXN=MemCheck\nresult=\n\x00'
-[15:31:24][SecureWebServer] [MAGMA] Sending authToken...
-[15:31:24][FeslClient] [127.0.0.1:50298]<-- 'acct\xc0\x00\x00\x02\x00\x00\x00XTXN=NuLogin\nreturnEncryptedInfo=0\nencryptedInfo=1234\nmacAddr=$aad2d428ffff\n\x00'
-[15:31:24][FeslClient] [127.0.0.1:50298] disconnected 
-[15:31:24][FeslClient] [127.0.0.1:50299] connected
-[15:31:24][FeslClient] [127.0.0.1:50299]<-- 'fsys\xc0\x00\x00\x01\x00\x00\x00\xcaTXN=Hello\nclientString=bfwest-pc\nsku=125170\nlocale=en_US\nclientPlatform=PC\nclientVersion="1.42.217478.0 "\nSDKVersion=5.0.0.0.0\nprotocolVersion=2.0\nfragmentSize=8096\nclientType=client-noreg\n\x00'
-[15:31:24][FeslClient] [127.0.0.1:50299]--> 'fsys\xc0\x00\x00\x01\x00\x00\x00\xe8TXN=Hello\ndomainPartition.domain=eagames\ndomainPartition.subDomain=bfwest-dedicated\ncurTime="Feb-22-2022 12:31:24 UTC"\nactivityTimeoutSecs=3600\nmessengerIp=127.0.0.1\nmessengerPort=0\ntheaterIp=127.0.0.1\ntheaterPort=18275\x00'
-[15:31:24][FeslClient] [127.0.0.1:50299]--> 'fsys\xc0\x00\x00\x00\x00\x00\x00=TXN=MemCheck\nmemcheck.[]=0\ntype=0\nsalt=hapOiGLuu\x00'
-[15:31:24][FeslClient] [127.0.0.1:50299]<-- 'fsys\x80\x00\x00\x00\x00\x00\x00"TXN=MemCheck\nresult=\n\x00'
-[15:31:30][FeslClient] [127.0.0.1:50299] disconnected 
+[15:42:22][Init] Initializing Battlefield Heroes Master Server Emulator...
+[15:42:22][Database] Connected to database!
+[15:42:22][Init] Successfully created SSL Context!
+[15:42:22][FeslClient] Created TCP Socket (now listening on port 18270)
+[15:42:22][FeslServer] Created TCP Socket (now listening on port 18051)
+[15:42:22][TheaterClient] Created TCP Socket (now listening on port 18275)
+[15:42:22][TheaterClient] Created UDP Socket (now listening on port 18275)
+[15:42:22][TheaterServer] Created TCP Socket (now listening on port 18056)
+[15:42:22][TheaterServer] Created UDP Socket (now listening on port 18056)
+[15:42:22][WebServer] Created TCP Socket (now listening on port 80)
+[15:42:22][WebServer] Created TCP Socket (now listening on port 443)
+[15:42:22][Init] Finished initialization! Ready for receiving incoming connections...
+[15:42:42][FeslClient] [127.0.0.1:62559] connected
+[15:42:42][FeslClient] [127.0.0.1:62559]<-- 'fsys\xc0\x00\x00\x01\x00\x00\x00\xcaTXN=Hello\nclientString=bfwest-pc\nsku=125170\nlocale=en_US\nclientPlatform=PC\nclientVersion="1.42.217478.0 "\nSDKVersion=5.0.0.0.0\nprotocolVersion=2.0\nfragmentSize=8096\nclientType=client-noreg\n\x00'
+[15:42:42][FeslClient] [127.0.0.1:62559]--> 'fsys\xc0\x00\x00\x01\x00\x00\x00\xe8TXN=Hello\ndomainPartition.domain=eagames\ndomainPartition.subDomain=bfwest-dedicated\ncurTime="Feb-22-2022 12:42:42 UTC"\nactivityTimeoutSecs=3600\nmessengerIp=127.0.0.1\nmessengerPort=0\ntheaterIp=127.0.0.1\ntheaterPort=18275\x00'
+[15:42:42][FeslClient] [127.0.0.1:62559]--> 'fsys\xc0\x00\x00\x00\x00\x00\x00=TXN=MemCheck\nmemcheck.[]=0\ntype=0\nsalt=3OTLZrZKt\x00'
+[15:42:42][FeslClient] [127.0.0.1:62559]<-- 'fsys\x80\x00\x00\x00\x00\x00\x00"TXN=MemCheck\nresult=\n\x00'
+[15:42:42][SecureWebServer] [MAGMA] Sending authToken...
+[15:42:42][FeslClient] [127.0.0.1:62559]<-- 'acct\xc0\x00\x00\x02\x00\x00\x00XTXN=NuLogin\nreturnEncryptedInfo=0\nencryptedInfo=1234\nmacAddr=$aad2d428ffff\n\x00'
+[15:42:42][FeslClient] [127.0.0.1:62559]--> 'acct\xc0\x00\x00\x02\x00\x00\x00CTXN=NuLogin\nlkey=1234\nnuid=1234\nprofileId=-1\nuserId=-1\x00'
+[15:42:42][FeslClient] [127.0.0.1:62559]<-- 'acct\xc0\x00\x00\x03\x00\x00\x00*TXN=NuGetPersonas\nnamespace=\n\x00'
+[15:42:42][FeslClient] [127.0.0.1:62559]--> 'acct\xc0\x00\x00\x03\x00\x00\x00,TXN=NuGetPersonas\npersonas.[]=0\x00'
+[15:42:42][FeslClient] [127.0.0.1:62559]<-- 'acct\xc0\x00\x00\x04\x00\x00\x00\x1eTXN=NuGetAccount\n\x00'
+[15:42:42][FeslClient] [127.0.0.1:62559]--> 'acct\xc0\x00\x00\x04\x00\x00\x00\x1dTXN=NuGetAccount\x00'
+[15:42:42][FeslClient] [127.0.0.1:62559]<-- 'rank\xc0\x00\x00\x05\x00\x00\x00xTXN=GetStats\nowner=-1\nownerType=1\nperiodId=0\nperiodPast=0\nkeys.0=c_ltm\nkeys.1=c_slm\nkeys.2=c_tut\nkeys.[]=3\n\x00'
+[15:42:42][FeslClient] [127.0.0.1:62559]--> 'rank\xc0\x00\x00\x05\x00\x00\x00\xb4TXN=GetStats\nstats.0.key=c_ltm\nstats.0.value=0\nstats.0.text=\nstats.1.key=c_slm\nstats.1.value=0\nstats.1.text=\nstats.2.key=c_tut\nstats.2.value=0\nstats.2.text=\nstats.[]=3\x00'
+[15:42:42][SecureWebServer] Unknown GET: /nucleus/check/user/-1
+[15:42:45][FeslClient] [127.0.0.1:62559]<-- 'rank\xc0\x00\x00\x06\x00\x00\x00\x8bTXN=UpdateStats\nu.0.o=-1\nu.0.ot=1\nu.0.s.[]=1\nu.0.s.0.ut=0\nu.0.s.0.k=c_ltm\nu.0.s.0.v=11350.0000\nu.0.s.0.t=\nu.0.s.0.pt=0\nu.[]=1\n\x00'
+[15:42:45][FeslClient] [127.0.0.1:62559]--> 'rank\xc0\x00\x00\x06\x00\x00\x00\x1cTXN=UpdateStats\x00'
+[15:42:46][FeslClient] [127.0.0.1:62559]<-- 'fsys\xc0\x00\x00\x07\x00\x00\x00BTXN=Goodbye\nreason=GOODBYE_CLIENT_NORMAL\nmessage=n/a\n\x00'
+[15:42:46][FeslClient] [127.0.0.1:62559][fsys] Client disconnected because of unknown error!
+[15:42:46][FeslClient] [127.0.0.1:62559] disconnected 

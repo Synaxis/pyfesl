@@ -1,0 +1,18 @@
+[15:38:28][Init] Initializing Battlefield Heroes Master Server Emulator...
+[15:38:28][Database] Connected to database!
+[15:38:28][Init] Successfully created SSL Context!
+[15:38:28][FeslClient] Created TCP Socket (now listening on port 18270)
+[15:38:28][FeslServer] Created TCP Socket (now listening on port 18051)
+[15:38:28][TheaterClient] Created TCP Socket (now listening on port 18275)
+[15:38:28][TheaterClient] Created UDP Socket (now listening on port 18275)
+[15:38:28][TheaterServer] Created TCP Socket (now listening on port 18056)
+[15:38:28][TheaterServer] Created UDP Socket (now listening on port 18056)
+[15:38:28][WebServer] Created TCP Socket (now listening on port 80)
+[15:38:28][WebServer] Created TCP Socket (now listening on port 443)
+[15:38:28][Init] Finished initialization! Ready for receiving incoming connections...
+[15:38:28][FeslClient] [127.0.0.1:62520] connected
+[15:38:28][FeslClient] [127.0.0.1:62520]<-- 'fsys\xc0\x00\x00\x01\x00\x00\x00\xcaTXN=Hello\nclientString=bfwest-pc\nsku=125170\nlocale=en_US\nclientPlatform=PC\nclientVersion="1.42.217478.0 "\nSDKVersion=5.0.0.0.0\nprotocolVersion=2.0\nfragmentSize=8096\nclientType=client-noreg\n\x00'
+[15:38:28][FeslClient] [127.0.0.1:62520]--> 'fsys\xc0\x00\x00\x01\x00\x00\x00\xe8TXN=Hello\ndomainPartition.domain=eagames\ndomainPartition.subDomain=bfwest-dedicated\ncurTime="Feb-22-2022 12:38:28 UTC"\nactivityTimeoutSecs=3600\nmessengerIp=127.0.0.1\nmessengerPort=0\ntheaterIp=127.0.0.1\ntheaterPort=18275\x00'
+[15:38:28][FeslClient] [127.0.0.1:62520]--> 'fsys\xc0\x00\x00\x00\x00\x00\x00=TXN=MemCheck\nmemcheck.[]=0\ntype=0\nsalt=CwuCRMUGO\x00'
+[15:38:28][FeslClient] [127.0.0.1:62520]<-- 'fsys\x80\x00\x00\x00\x00\x00\x00"TXN=MemCheck\nresult=\n\x00'
+[15:38:34][FeslClient] [127.0.0.1:62520] disconnected 

@@ -12,12 +12,12 @@ def HandleNuLogin(self, data):
     loginData = db.loginUser(loginInfo)
 
     # if loginData['UserID'] > 0:  # Got UserID - Login Successful
-    self.CONNOBJ.accountSessionKey = 1234
-    self.CONNOBJ.userID = 1234
-    self.CONNOBJ.nuid = 1234
+    self.CONNOBJ.accountSessionKey = "1234"
+    self.CONNOBJ.userID = "1234"
+    self.CONNOBJ.nuid = "1234"
 
-    toSend.set("PacketData", "lkey", 1234)
-    toSend.set("PacketData", "nuid", 1234)
+    toSend.set("PacketData", "lkey", "1234")
+    toSend.set("PacketData", "nuid", "1234")
 
     toSend.set("PacketData", "profileId", str(loginData['UserID']))
     toSend.set("PacketData", "userId", str(loginData['UserID']))
